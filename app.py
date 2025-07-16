@@ -59,7 +59,7 @@ def extract_assets_with_selenium(url):
         chrome_options.add_argument("user-agent=Mozilla/5.0")
 
         service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome('./drivers/chromedriver', options=options)
+        driver = webdriver.Chrome('./drivers/chromedriver', options=chrome_options)
 
         print(f"[DEBUG] Loading URL: {url}")
         driver.get(url)
