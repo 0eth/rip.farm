@@ -1,0 +1,113 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #ff5555;
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.2;
+    user-select: text;
+    cursor: default;
+    height: 100%;
+  }
+  
+.console-container {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  padding: 20px;
+}
+
+.console-container a {
+  color: #ff5555;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.console-container a:hover {
+  color: white !important;
+}
+
+  .console-container .version {
+  color: white;
+}
+  /* Container for prompt + textarea */
+  .prompt-line {
+    display: flex;
+    align-items: flex-start; /* you can try 'center' or 'baseline' if flex-start feels off */
+    padding-left: 0px; /* match console-container */
+  }
+  
+  .prompt {
+    display: flex;
+    align-items: flex-start; /* you can try 'center' or 'baseline' if flex-start feels off */
+    padding-left: 0px; /* match console-container */
+    font-weight: bold;
+  }
+  
+  /* Form reset */
+  form {
+    all: unset;
+    flex: 1;
+  }
+  
+  textarea {
+    all: unset;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: transparent;
+    caret-color: #ff5555;
+    line-height: 1.2;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    resize: none;
+    box-sizing: border-box;
+    min-height: 1.2em;
+    cursor: text;
+    
+    /* add this to nudge vertical alignment if needed */
+    vertical-align: top;
+  }
+  
+  textarea:focus {
+    outline: none;
+    caret-color: transparent; /* ensure caret is hidden on focus */
+  }
+  .prompt {
+    animation: blink 1s step-start infinite;
+  }
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .rainbow-text * {
+  animation: rainbow 0.25s infinite linear;
+}
+
+@keyframes rainbow {
+  0% { color: red; }
+  14% { color: orange; }
+  28% { color: yellow; }
+  42% { color: green; }
+  56% { color: blue; }
+  70% { color: indigo; }
+  84% { color: violet; }
+  100% { color: red; }
+}
+.ascii-art {
+  font-family: monospace;
+  white-space: pre;
+  overflow-x: auto;
+  display: block;
+  background: #000;
+  color: #ff5555;
+  padding-left: 20px;
+}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>rip.farm</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const textarea = document.querySelector("textarea");
+  if (!textarea) return;
+
+  // Initial focus
+  textarea.focus();
+
+  // On blur, re-focus shortly after
+  textarea.addEventListener("blur", () => {
+    setTimeout(() => textarea.focus(), 10);
+  });
+
+  // On any click outside the textarea, prevent default and refocus textarea
+  document.addEventListener("mousedown", (e) => {
+    if (e.target !== textarea) {
+      e.preventDefault();
+      textarea.focus();
+    }
+  });
+
+  // Prevent tab focus moving away
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      textarea.focus();
+    }
+  });
+});
+</script>
+<body {% if lsd_mode %}class="rainbow-text"{% endif %}>
+    <div class="ascii-art">
+      _         __                     
+     (_)       / _|                    
+ _ __ _ _ __  | |_ __ _ _ __ _ __ ___  
+| '__| | '_ \ |  _/ _` | '__| '_ ` _ \ 
+| |  | | |_) || || (_| | |  | | | | | |
+|_|  |_| .__(_)_| \__,_|_|  |_| |_| |_|
+       | |                             
+       |_|                             
+</div>
+  <div class="console-container">
+    rip.farm <span class="version">[Version 1.0]</span>
+    
+    <br>
+    <br>
+    Enter a URL to fetch and compile page content.
+    <br>
+    Enter 'menu' to bring up command directory.
+    <br>
+    <br>
+
+    {% for entry in history %}
+  <div class="cached-entry">
+    {% if entry.special_response %}
+      <div style="color: #ffffff;">
+        {{ entry.special_response | safe }}
+      </div>
+    {% elif entry.grouped_assets %}
+      Ripped {{ entry.total_count }} items from <strong>{{ entry.url }}</strong>:<br><br>
+      {% for ext, urls in entry.grouped_assets.items() %}
+        [{{ ext }}]<br>
+        {% for url in urls %}
+          <a href="{{ url }}" target="_blank" rel="noopener noreferrer" style="color: #ff5555;">{{ url }}</a><br>
+        {% endfor %}
+        <br>
+      {% endfor %}
+    {% elif entry.error %}
+      <div style="color: #ff5555;">
+        Error for <strong>{{ entry.url }}</strong>: {{ entry.error }}
+      </div>
+    {% else %}
+      <div style="color: #ff5555;">
+        No downloadable assets found on <strong>{{ entry.url }}</strong>.
+      </div>
+    {% endif %}
+  </div>
+{% endfor %}
+    <div class="prompt-line">
+      <span class="prompt">&gt;</span>
+      <form method="post" style="flex: 2;">
+        <textarea
+          name="url"
+          autocomplete="off"
+          autofocus
+          spellcheck="false"
+          rows="1"
+          maxlength="1000"
+          style="resize:none;"
+        ></textarea>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const textarea = document.querySelector('textarea');
+    const form = document.querySelector('form');
+
+    // Prevent Enter key from adding new lines; submit form instead
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        form.submit();
+      }
+    });
+
+    // Auto-expand textarea height on input
+    textarea.addEventListener('input', () => {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    });
+
+    // Initialize height
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  </script>
+  
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const entries = {{ history | tojson }};
+  if (entries.length > 0) {
+    const lastEntry = entries[entries.length - 1];
+    if (lastEntry.special_response === "Exiting...") {
+      // Clear cache first
+      fetch('/clear_cache', { method: 'POST', keepalive: true })
+        .finally(() => {
+          setTimeout(() => {
+            window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+          }, 1500); // 1.5 second delay
+        });
+    }
+  }
+});
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cachedEntries = document.querySelectorAll(".cached-entry");
+      if (cachedEntries.length === 0) return;
+    
+      const lastEntry = cachedEntries[cachedEntries.length - 1];
+      const originalHTML = lastEntry.innerHTML;
+      lastEntry.innerHTML = ""; // clear content
+    
+      function typeWriter(node, parent, speed = 2, callback) {
+        if (!node) {
+          if (callback) callback();
+          return;
+        }
+    
+        if (node.nodeType === Node.TEXT_NODE) {
+          let text = node.textContent;
+          let i = 0;
+    
+          function typeText() {
+            if (i < text.length) {
+              parent.appendChild(document.createTextNode(text.charAt(i)));
+              i++;
+              setTimeout(typeText, speed);
+            } else {
+              // Done typing this text node, move to next sibling
+              typeWriter(node.nextSibling, parent, speed, callback);
+            }
+          }
+          typeText();
+    
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const newElem = document.createElement(node.tagName);
+          // Copy attributes
+          for (let attr of node.attributes) {
+            newElem.setAttribute(attr.name, attr.value);
+          }
+          parent.appendChild(newElem);
+    
+          if (node.firstChild) {
+            // Type children, then siblings
+            typeWriter(node.firstChild, newElem, speed, () => {
+              typeWriter(node.nextSibling, parent, speed, callback);
+            });
+          } else {
+            // No children, move to next sibling
+            typeWriter(node.nextSibling, parent, speed, callback);
+          }
+        } else {
+          // Skip other node types
+          typeWriter(node.nextSibling, parent, speed, callback);
+        }
+      }
+    
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = originalHTML;
+      typeWriter(tempDiv.firstChild, lastEntry);
+    });
+    </script>
+
+    
+</body>
+</html>
