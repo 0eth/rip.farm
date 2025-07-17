@@ -1,7 +1,7 @@
 # Use official Python image as base
 FROM python:3.11-slim
 
-# Install required dependencies for Chromium
+# Install required dependencies for Chromium (no webdriver-manager here)
 RUN apt-get update && apt-get install -y \
     chromium \
     chromium-driver \
@@ -37,7 +37,7 @@ WORKDIR /app
 # Copy your app code
 COPY . .
 
-# Install Python dependencies
+# Install Python dependencies including selenium and webdriver-manager
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose port
