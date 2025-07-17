@@ -50,7 +50,6 @@ def has_allowed_extension(url):
 
 def extract_assets_with_selenium(url):
     try:
-        try:
         chrome_options = Options()
         chrome_options.binary_location = "/usr/bin/chromium"
         chrome_options.add_argument("--headless")
