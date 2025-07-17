@@ -51,13 +51,12 @@ def has_allowed_extension(url):
 def extract_assets_with_selenium(url):
     try:
         chrome_options = Options()
-        chrome_options.binary_location = "./drivers/chromedriver"
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
-        service = Service("./drivers/chromedriver")
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        # No need for Service or driver path — Selenium will manage it
+        driver = webdriver.Chrome(options=chrome_options)
 
         print(f"[DEBUG] Loading URL: {url}")
         driver.get(url)
