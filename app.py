@@ -58,8 +58,8 @@ def extract_assets_with_selenium(url):
         chrome_options.add_argument("window-size=1920x1080")
         chrome_options.add_argument("user-agent=Mozilla/5.0")
 
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome('./drivers/chromedriver', options=chrome_options)
+        service = Service('./drivers/chromedriver')
+        driver = webdriver.Chrome(service=service, options=chrome_options)
 
         print(f"[DEBUG] Loading URL: {url}")
         driver.get(url)
