@@ -10,6 +10,7 @@ import time
 from collections import defaultdict
 import os
 import re
+import tempfile
 
 app = Flask(__name__)
 app.secret_key = "replace_with_your_secure_random_secret_key"  # Must set for sessions!
@@ -49,20 +50,20 @@ def has_allowed_extension(url):
 
 def extract_assets_with_selenium(url):
     try:
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
+        options = Options()
+        options.binary_location = "/usr/bin/chromium"  # Required in Docker
+        options.add_argument("--headless")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")
 
-        # No need for Service or driver path — Selenium will manage it
-        driver = webdriver.Chrome(options=chrome_options)
+        driver = webdriver.Chrome(options=options)
 
         print(f"[DEBUG] Loading URL: {url}")
         driver.get(url)
-        time.sleep(5)  # Increased wait time for JS & images to load
+        time.sleep(5)  # Adjust as needed
 
-        page_source = driver.page_source
-        soup = BeautifulSoup(page_source, "html.parser")
+        soup = BeautifulSoup(driver.page_source, "html.parser")
 
         assets = []
 
