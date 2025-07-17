@@ -57,8 +57,8 @@ def extract_assets_with_selenium(url):
         options.add_argument("--no-sandbox")
         options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")
 
-        driver = webdriver.Chrome(options=options)
-
+        service = Service("/usr/bin/chromedriver")
+        driver = webdriver.Chrome(service=service, options=options)
         print(f"[DEBUG] Loading URL: {url}")
         driver.get(url)
         time.sleep(5)  # Adjust as needed
